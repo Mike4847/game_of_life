@@ -44,6 +44,46 @@ void initialize_world_from_file(const char * filename) {
 
 	   Also need to reset the next generation to DEAD
 	 */
+	
+	FILE * pfile;
+	int i = 0, j = 0, len;
+	char strread[256];
+
+	if ((pfile = fopen(filename, "r")) == NULL) {
+		fprintf(stderr,"Error: unable to read \"%s\" (error #%d).\n",
+				filename, errno);
+		abort();
+	}
+
+	while (j < WORLDHEIGHT && !feof(pfile) &&
+			fgets(strread, 256, pfile) != NULL) {
+		/* jth line read */
+		len = strlen(strread);
+		if (len > WORLDWIDTH)
+			len = WORLDWIDTH; /* ignore extra chars */
+		for (i = 0; i < len; i++)
+			world[i][j] = strread[i] == CHAR_ALIVE ? ALIVE : DEAD;
+
+		/* take care of unspecified cells in row */
+		for (;i < WORLDWIDTH; i++)
+			world[i][j] = DEAD;
+		j++; /* next line */
+	}
+
+	/* take care of unspecified last lines */
+	for (; j < WORLDHEIGHT; j++)
+		for (i = 0; i < WORLDWIDTH; i++)
+			world[i][j] = DEAD;
+
+	/* initialize next generation to DEAD */
+	for (i = 0; i < WORLDWIDTH; i++)
+		for (j = 0; j < WORLDHEIGHT; j++)
+			nextstates[i][j] = DEAD;
+
+	fclose(pfile);
+}
+
+
 
 
 }
