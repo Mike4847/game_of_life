@@ -2,7 +2,7 @@
  * lifegame.c
  *
  *  Created on:
- *      Author:
+ *      Author: Michael Eleman Lopeyok
  */
 
 #include <stdio.h>
