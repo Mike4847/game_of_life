@@ -86,7 +86,7 @@ void initialize_world_from_file(const char * filename) {
 
 
 
-}
+ 
 
 void save_world_to_file(const char * filename) {
 	/* TODO: write the state of the world into a file with
@@ -99,6 +99,36 @@ void save_world_to_file(const char * filename) {
 	   initialize_world_from_file(filename) above; we can use
 	   it to resume a game later
 	 */
+	FILE *pfile;
+	int i , j;
+	char rowbuffer[WORLDWIDTH + 1];
+	pfile = fopen(filename,"w");
+
+	if( pfile == NULL){
+		filename = "output.txt";
+		pfile=fopen(filename,"w");
+		if(pfile == NULL){
+			fprintf(stderr,"Error: unable to read \"%s\" (error #%d).\n",
+					filename, errno);
+			abort();
+		}
+	}
+
+	while( j < WORLDHEIGHT ){
+		for (i = 0; i < WORLDWIDTH; i++){
+			if (world[i][j] == ALIVE){
+				rowbuffer[i] = CHAR_ALIVE;
+			}else{
+				rowbuffer[i] = CHAR_DEAD;
+			}
+		}
+		fprintf(pfile, "%s\n", rowbuffer);
+		rowbuffer[WORLDWIDTH] ='\0';
+
+		j++;
+
+	}
+	fclose(pfile);
 
 
 }
@@ -163,7 +193,7 @@ void output_world(void) {
 		worldstr[i] = '-';
 	worldstr[2*WORLDWIDTH] = '+';
 	puts(worldstr);
-	for (i = 0; i <= 2*WORLDWIDTH; i+=2)
+	for (i = 0; i <= 2* WORLDWIDTH; i+=2)
 		worldstr[i] = '|';
 	for (i = 0; i < WORLDHEIGHT; i++) {
 		for (j = 0; j < WORLDWIDTH; j++)
